@@ -1,0 +1,91 @@
+
+load recursion1.dat recursion1
+
+
+data=recursion1;
+
+
+[lblf,ncl] = clus_kur(data)
+%eti=clus_bas(data,1);
+%[lblf,ncl] = clus_grp(data,eti)
+
+eti=lblf;
+
+V=[0.2300, 0.190, 0.1433, 0.1228; 0.1682, 0.1682, 0.1682, 0.1682];
+proy=V
+
+
+proy11=data0*proy(:,4);
+size(proy11)
+plot(proy11,zeros(length(proy11)),'.')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%que me coloque solo algunas direcciones, las que max.
+eti=clus_bas1(data)
+%[lblf,ncl] = clus_grp(data,eti)
+%eti=lblf
+
+color=('brymgkcbrymgk');%13 combinaciones colores y forma
+forma=('ox*+s*dh^v<>.');%13 combinaciones colores y forma
+
+maxi=max(eti)
+hold on;
+for i=1:maxi
+ ind=find(eti==i);
+ plot(data(ind,1),data(ind,2),forma(i),'MarkerEdgeColor',color(6)) 
+%,'MarkerEdgeColor',color(i))
+end
+
+hold off;
+
+
+maxi=max(eti);
+hold on;
+total(1:maxi)=0;
+j=1;
+vari(1:2)=0;
+clear B BINT ee_inter ee_coef vari STATS; 
+for i=1:maxi
+ ind=find(eti==i);
+ total(i)=length(ind);
+ plot(data(ind,1),data(ind,2),forma(i))
+ %las etiquetas con más elementos son 1 y 3...
+ if (i==1 || i==2)
+     x=[ones(length(ind),1), data(ind,1)];
+    y=data(ind,2);
+    %REGRESIÓN:
+    %B: coef estimados
+    %BINT:intervalos de confianza para los coef estimados
+    %R:residuales
+    %RINT= ignorar
+    %stats=[R^2, F, ]
+    [B(:,j),BINT(1:2,1:2,j),R,RINT,STATS(j,:)]=regress(y,x);
+    ee_inter(j)=(BINT(1,2,j)-B(1,j))/tinv(0.95,200-2);
+    ee_coef(j)=(BINT(2,2,j)-B(2,j))/tinv(0.95,200-2);
+    %VARIANZAS
+    y_est=B(2,j)+B(1,j)*x(:,2);
+    vari(j)=var(R);
+    if(i==1)
+        R1=R;
+    end
+    if(i==3)
+        R2=R;
+    end
+    j=j+1;
+ end
+end
+
+B
+
+
+
+
+
+
+
+[fin, n_grupos]=label_grupos(eti,(grupooriginal+1));
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

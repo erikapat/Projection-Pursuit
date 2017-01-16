@@ -1,0 +1,1 @@
+usar clus_kur1(x)
